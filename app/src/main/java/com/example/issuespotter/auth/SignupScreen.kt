@@ -65,13 +65,10 @@ fun SignUpScreen(
     val authState by authViewModel.authState.collectAsState()
     val isLoading = authState is AuthState.Loading
 
-    // Observe the authState and navigate on success.
     LaunchedEffect(key1 = authState) {
         if (authState is AuthState.Authenticated) {
             navController.navigate("home") {
-                // Clear the back stack so the user can't go back to the signup screen
                 popUpTo("signup") { inclusive = true }
-                // Also pop the login screen if it's in the back stack
                 popUpTo("login") { inclusive = true }
             }
         }
@@ -82,14 +79,12 @@ fun SignUpScreen(
             .fillMaxSize()
             .background(Color(0xFF06154C))
     ) {
-        // Re-using the same decorative background canvas
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize()
         ) {
             val width = constraints.maxWidth.toFloat()
             val height = constraints.maxHeight.toFloat()
 
-            // Same path drawing logic as LoginScreen
             val mediumColoredPath = Path().apply {
                 val mediumColoredPoint1 = Offset(0f, height * 0.8f)
                 val mediumColoredPoint2 = Offset(width * 0.25f, height * 0.9f)
@@ -126,7 +121,6 @@ fun SignUpScreen(
             }
         }
 
-        // Main content column for Sign Up
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -147,7 +141,6 @@ fun SignUpScreen(
             )
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Custom styled TextFields
             val textFieldColors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
@@ -208,7 +201,6 @@ fun SignUpScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Sign Up Button
             Button(
                 onClick = {
                     if (password != confirmPassword) {

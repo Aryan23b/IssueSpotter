@@ -54,11 +54,9 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     val authState by authViewModel.authState.collectAsState()
 
-    // Observe the authState and navigate on success.
     LaunchedEffect(key1 = authState) {
         if (authState is AuthState.Authenticated) {
             navController.navigate("home") {
-                // Clear the back stack so the user can't go back to the login screen
                 popUpTo("login") { inclusive = true }
             }
         }
@@ -70,7 +68,6 @@ fun LoginScreen(
             .background(Color(0xFF06154C))
     ) {
 
-        // Re-using the same decorative background canvas from ProfileScreen
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -117,7 +114,7 @@ fun LoginScreen(
             }
         }
 
-        // Main content column
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -138,7 +135,6 @@ fun LoginScreen(
             )
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Email text field with custom colors for the dark theme
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -181,7 +177,6 @@ fun LoginScreen(
             )
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Login Button styled to match the theme
             Button(
                 onClick = { authViewModel.login(email, password) },
                 modifier = Modifier
@@ -190,7 +185,7 @@ fun LoginScreen(
                 enabled = authState != AuthState.Loading,
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF7E57C2), // Purple color from home screen
+                    containerColor = Color(0xFF7E57C2),
                     contentColor = Color.White,
                     disabledContainerColor = Color.Gray
                 )
@@ -213,7 +208,6 @@ fun LoginScreen(
                 Text("Don't have an account? Sign Up", color = Color.White)
             }
 
-            // Display error message if authState is Error
             if (authState is AuthState.Error) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
