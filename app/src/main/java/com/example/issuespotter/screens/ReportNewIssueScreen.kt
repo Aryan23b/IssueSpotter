@@ -1,7 +1,7 @@
 package com.example.issuespotter.screens
 
-
-
+import android.Manifest
+import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,6 +15,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -26,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.issuespotter.auth.AuthViewModel
+import com.google.android.gms.location.LocationServices
 import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -35,9 +38,11 @@ data class ReportData(
     val title: String,
     val description: String,
     val category: String,
+    val latitude: Double,
+    val longitude: Double,
     val image_url: String? = null,
     val user_id: String,
-    val status: String = "Open"
+    val status: String
 )
 
 
@@ -48,15 +53,61 @@ fun ReportNewIssueScreen(navController: NavController, authViewModel: AuthViewMo
     var description by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<String?>(null) }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var latitude by remember { mutableStateOf<Double?>(null) }
+    var longitude by remember { mutableStateOf<Double?>(null) }
+    var locationError by remember { mutableStateOf<String?>(null) }
+
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
+    val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         imageUri = uri
     }
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted: Boolean ->
+            if (isGranted) {
+                locationError = null
+                // Try to get the last known location.
+                try {
+                    fusedLocationClient.lastLocation
+                        .addOnSuccessListener { location ->
+                            if (location != null) {
+                                latitude = location.latitude
+                                longitude = location.longitude
+                                locationError = null
+                            } else {
+                                locationError = "Could not get location. Ensure GPS is enabled."
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar("Could not get location. Ensure GPS is enabled.")
+                                }
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            locationError = "Error getting location: ${e.message}"
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Error getting location: ${e.message}")
+                            }
+                        }
+                } catch (e: SecurityException) {
+                    locationError = "Location permission not granted."
+                     coroutineScope.launch {
+                        snackbarHostState.showSnackbar("Location permission not granted.")
+                    }
+                }
+            } else {
+                locationError = "Location permission denied."
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar("Location permission is required to get current location.")
+                }
+            }
+        }
+    )
 
     Box(
         modifier = Modifier
@@ -132,7 +183,6 @@ fun ReportNewIssueScreen(navController: NavController, authViewModel: AuthViewMo
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Custom styled TextFields colors
                 val textFieldColors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White,
@@ -168,7 +218,7 @@ fun ReportNewIssueScreen(navController: NavController, authViewModel: AuthViewMo
                     selectedCategory = selectedCategory,
                     onCategorySelected = { selectedCategory = it }
                 )
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = { imagePickerLauncher.launch("image/*") },
                     modifier = Modifier.fillMaxWidth(),
@@ -185,12 +235,45 @@ fun ReportNewIssueScreen(navController: NavController, authViewModel: AuthViewMo
                         color = Color.White.copy(alpha = 0.7f)
                     )
                 }
-                Spacer(modifier = Modifier.weight(1f)) // Pushes submit button to bottom
+                Spacer(modifier = Modifier.height(16.dp))
+                 Button(
+                    onClick = {
+                        locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.2f))
+                ) {
+                    Text("Get Current Location", color = Color.White)
+                }
+
+                if (latitude != null && longitude != null) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Location: Lat: $latitude, Lon: $longitude",
+                        fontSize = 14.sp,
+                        color = Color.White.copy(alpha = 0.7f)
+                    )
+                } else if (locationError != null) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = locationError!!,
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+
+
+                Spacer(modifier = Modifier.weight(1f)) 
                 Button(
                     onClick = {
                         coroutineScope.launch {
                             if (title.isBlank() || description.isBlank() || selectedCategory == null) {
-                                snackbarHostState.showSnackbar("Please fill in all the details.")
+                                snackbarHostState.showSnackbar("Please fill in title, description, and category.")
+                                return@launch
+                            }
+                            if (latitude == null || longitude == null) {
+                                snackbarHostState.showSnackbar("Please fetch the current location.")
                                 return@launch
                             }
                             val userId = authViewModel.supabase.auth.currentUserOrNull()?.id
@@ -206,8 +289,11 @@ fun ReportNewIssueScreen(navController: NavController, authViewModel: AuthViewMo
                                     title = title,
                                     description = description,
                                     category = selectedCategory!!,
+                                    latitude = latitude!!,
+                                    longitude = longitude!!,
                                     image_url = imageUrl,
-                                    user_id = userId
+                                    user_id = userId,
+                                    status = "pending" // Explicitly set for new reports
                                 )
                                 authViewModel.submitReport(reportData)
                                 snackbarHostState.showSnackbar("Report submitted successfully!")

@@ -2,13 +2,17 @@ package com.example.issuespotter.auth
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.issuespotter.clients.SupabaseManager
+import com.example.issuespotter.screens.Report
 import com.example.issuespotter.screens.ReportData
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.exceptions.RestException
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,25 +27,51 @@ sealed class AuthState {
     data class Error(val message: String) : AuthState()
 }
 
+sealed interface ReportDetailState {
+    data object Idle : ReportDetailState
+    data object Loading : ReportDetailState
+    data class Success(val report: Report) : ReportDetailState
+    data class Error(val message: String) : ReportDetailState
+}
+
 class AuthViewModel : ViewModel() {
 
     val supabase = SupabaseManager.supabaseClient
 
+
     private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
-    val authState: StateFlow<AuthState> = _authState
+    val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
     private val _reports = MutableStateFlow<List<ReportData>>(emptyList())
     val reports: StateFlow<List<ReportData>> = _reports.asStateFlow()
 
+    private val _isDarkTheme = MutableStateFlow(true)
+    val isDarkTheme: StateFlow<Boolean> = _isDarkTheme.asStateFlow()
+
+    private val _reportDetailState = MutableStateFlow<ReportDetailState>(ReportDetailState.Idle)
+    val reportDetailState: StateFlow<ReportDetailState> = _reportDetailState.asStateFlow()
+
+    // Track user upvoted reports
+    private val _userUpvotedReports = MutableStateFlow<Set<String>>(emptySet())
+    val userUpvotedReports: StateFlow<Set<String>> = _userUpvotedReports.asStateFlow()
+
+    // Track upvoting state (reportId to loading state)
+    private val _isUpvoting = MutableStateFlow<Pair<String, Boolean>?>(null)
+    val isUpvoting: StateFlow<Pair<String, Boolean>?> = _isUpvoting.asStateFlow()
+
     init {
         viewModelScope.launch {
             val session = supabase.auth.currentSessionOrNull()
+            _authState.value = if (session != null) AuthState.Authenticated else AuthState.NotAuthenticated
+
             if (session != null) {
-                _authState.value = AuthState.Authenticated
-            } else {
-                _authState.value = AuthState.NotAuthenticated
+                loadUserUpvotedReports()
             }
         }
+    }
+
+    fun toggleTheme() {
+        _isDarkTheme.value = !_isDarkTheme.value
     }
 
     fun signUp(email: String, pass: String) {
@@ -53,6 +83,7 @@ class AuthViewModel : ViewModel() {
                     this.password = pass
                 }
                 _authState.value = AuthState.Authenticated
+                loadUserUpvotedReports()
             } catch (e: Exception) {
                 _authState.value = AuthState.Error("Sign Up Failed: ${e.message}")
             }
@@ -68,6 +99,7 @@ class AuthViewModel : ViewModel() {
                     this.password = pass
                 }
                 _authState.value = AuthState.Authenticated
+                loadUserUpvotedReports()
             } catch (e: Exception) {
                 _authState.value = AuthState.Error("Login Failed: ${e.message}")
             }
@@ -75,11 +107,11 @@ class AuthViewModel : ViewModel() {
     }
 
     fun logout() {
-        _authState.value = AuthState.Loading
         viewModelScope.launch {
             try {
                 supabase.auth.signOut()
                 _authState.value = AuthState.NotAuthenticated
+                _userUpvotedReports.value = emptySet()
             } catch (e: Exception) {
                 _authState.value = AuthState.Error("Logout Failed: ${e.message}")
             }
@@ -87,46 +119,146 @@ class AuthViewModel : ViewModel() {
     }
 
     suspend fun uploadImageToSupabase(imageUri: Uri, userId: String, context: Context): String {
-        return try {
-            val fileBytes = context.contentResolver.openInputStream(imageUri)?.readBytes()
-            val fileName = "reports/${userId}/${UUID.randomUUID()}.jpg"
+        val fileBytes = context.contentResolver.openInputStream(imageUri)?.readBytes()
+            ?: throw Exception("Failed to read image file.")
+        val fileName = "reports/${userId}/${UUID.randomUUID()}.jpg"
 
-            if (fileBytes != null) {
-                supabase.storage.from("reports").upload(path = fileName, data = fileBytes) {
-                    upsert = false
-                }
-                supabase.storage.from("reports").publicUrl(fileName)
-            } else {
-                throw Exception("Failed to read image file.")
-            }
-        } catch (e: Exception) {
-            throw e
+        supabase.storage.from("reports").upload(path = fileName, data = fileBytes) {
+            upsert = false
         }
+        return supabase.storage.from("reports").publicUrl(fileName)
     }
-
 
     suspend fun submitReport(report: ReportData) {
         try {
             supabase.from("reports").insert(report)
         } catch (e: Exception) {
+            Log.e("AuthViewModel", "Error submitting report: ${e.message}", e)
             throw e
         }
     }
 
-
-    fun getReports() {
+    fun fetchReportById(reportId: String) {
         viewModelScope.launch {
+            _reportDetailState.value = ReportDetailState.Loading
             try {
-                val fetchedReports = supabase.from("reports")
-                    .select()
-                    .decodeList<ReportData>()
-                _reports.value = fetchedReports
+                val result = supabase.from("reports")
+                    .select {
+                        filter {
+                            eq("id", reportId)
+                        }
+                    }
+                    .decodeSingle<Report>()
+
+                _reportDetailState.value = ReportDetailState.Success(result)
             } catch (e: Exception) {
-                // Handle error
-                _reports.value = emptyList()
-                // Log the error or show a Toast
+                Log.e("AuthViewModel", "Failed to fetch report by ID $reportId: ${e.message}", e)
+                _reportDetailState.value = ReportDetailState.Error("Failed to fetch report: ${e.message}")
             }
         }
     }
-}
 
+    fun upvoteReport(reportId: String) {
+        viewModelScope.launch {
+            val userId = supabase.auth.currentUserOrNull()?.id
+            if (userId == null) {
+                _reportDetailState.value = ReportDetailState.Error("Please login to upvote.")
+                return@launch
+            }
+
+            if (hasUserUpvoted(reportId)) {
+                _reportDetailState.value = ReportDetailState.Error("You've already upvoted this report.")
+                return@launch
+            }
+
+            _isUpvoting.value = Pair(reportId, true)
+
+            try {
+
+                supabase.from("report_upvotes").insert(
+                    mapOf("report_id" to reportId, "user_id" to userId)
+                )
+
+                val currentReport = supabase.from("reports")
+                    .select {
+                        filter {
+                            eq("id", reportId)
+                        }
+                    }
+                    .decodeSingle<Report>()
+
+                val currentCount = currentReport.upvote_count ?: 0
+                val newCount = currentCount + 1
+
+                supabase.from("reports").update(
+                    mapOf("upvote_count" to newCount)
+                ) {
+                    filter {
+                        eq("id", reportId)
+                    }
+                }
+
+
+                _userUpvotedReports.value = _userUpvotedReports.value + reportId
+                _isUpvoting.value = Pair(reportId, false)
+
+
+                val currentState = _reportDetailState.value
+                if (currentState is ReportDetailState.Success) {
+                    val updatedReport = currentState.report.copy(
+                        upvote_count = newCount
+                    )
+                    _reportDetailState.value = ReportDetailState.Success(updatedReport)
+                }
+
+            } catch (e: RestException) {
+                if (e.message?.contains("23505") == true || e.message?.contains("duplicate") == true) {
+                    _userUpvotedReports.value = _userUpvotedReports.value + reportId
+                    _isUpvoting.value = Pair(reportId, false)
+                    _reportDetailState.value = ReportDetailState.Error("You've already upvoted this report.")
+                } else {
+                    Log.e("AuthViewModel", "RestException during upvote: ${e.message}", e)
+                    _isUpvoting.value = Pair(reportId, false)
+                    _reportDetailState.value = ReportDetailState.Error("Upvote failed: Database error.")
+                }
+            } catch (e: Exception) {
+                Log.e("AuthViewModel", "Unexpected error during upvote: ${e.message}", e)
+                _isUpvoting.value = Pair(reportId, false)
+                _reportDetailState.value = ReportDetailState.Error("Upvote failed: ${e.message ?: "Unknown error"}")
+            }
+        }
+    }
+
+    fun hasUserUpvoted(reportId: String): Boolean {
+        return _userUpvotedReports.value.contains(reportId)
+    }
+
+    fun loadUserUpvotedReports() {
+        viewModelScope.launch {
+            val userId = supabase.auth.currentUserOrNull()?.id ?: return@launch
+
+            try {
+                val upvotedReports = supabase.from("report_upvotes")
+                    .select {
+                        filter {
+                            eq("user_id", userId)
+                        }
+                    }
+                    .decodeList<Map<String, Any>>()
+
+                val reportIds = upvotedReports.mapNotNull { it["report_id"]?.toString() }.toSet()
+                _userUpvotedReports.value = reportIds
+
+            } catch (e: Exception) {
+                Log.e("AuthViewModel", "Error loading user upvoted reports: ${e.message}", e)
+
+            }
+        }
+    }
+
+
+    fun clearReportDetailState() {
+        _reportDetailState.value = ReportDetailState.Idle
+    }
+
+}
