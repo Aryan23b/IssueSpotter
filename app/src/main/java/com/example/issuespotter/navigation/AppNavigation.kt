@@ -9,7 +9,9 @@ import com.example.issuespotter.auth.AuthViewModel
 import com.example.issuespotter.auth.LoginScreen
 import com.example.issuespotter.auth.SignUpScreen
 import com.example.issuespotter.screens.HomeScreen
+import com.example.issuespotter.screens.ProfileScreen
 import com.example.issuespotter.screens.ReportNewIssueScreen
+import com.example.issuespotter.screens.user
 
 
 @Composable
@@ -29,6 +31,13 @@ fun AppNavigation() {
         }
         composable("reportNewIssue") {
             ReportNewIssueScreen(navController, authViewModel)
+
+        }
+        composable("profile"){
+            ProfileScreen(navController, authViewModel, user = user(name = "aryan"))
+        }
+
+        composable("rating"){
 
         }
     }
