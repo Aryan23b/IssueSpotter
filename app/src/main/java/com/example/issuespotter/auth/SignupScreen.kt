@@ -1,6 +1,13 @@
 package com.example.issuespotter.auth
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -31,15 +39,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.issuespotter.R
 
 
 fun Path.standardQuadFromTo(from: Offset, to: Offset) {
@@ -57,6 +70,7 @@ fun SignUpScreen(
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
+    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -64,6 +78,17 @@ fun SignUpScreen(
 
     val authState by authViewModel.authState.collectAsState()
     val isLoading = authState is AuthState.Loading
+
+    val infiniteTransition = rememberInfiniteTransition(label = "logo_pulse")
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.08f, // Controls how much the logo grows
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = LinearEasing), // Duration of one pulse
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "logo_scale"
+    )
 
     LaunchedEffect(key1 = authState) {
         if (authState is AuthState.Authenticated) {
@@ -128,6 +153,23 @@ fun SignUpScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+
+            Image(
+                painter = painterResource(id = R.drawable.issuespotterlogo),
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .size(150.dp)
+                    .shadow(
+                        elevation = 10.dp, // Adjust shadow size
+                        shape = CircleShape,
+                        spotColor = Color(0xFF7E57C2) // Optional: shadow color matching your theme
+                    )
+                    .clip(CircleShape)
+                    .scale(scale)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+
+
             Text(
                 text = "Issue Spotter",
                 fontSize = 36.sp,
@@ -153,6 +195,17 @@ fun SignUpScreen(
                 errorBorderColor = MaterialTheme.colorScheme.error,
                 errorLabelColor = MaterialTheme.colorScheme.error
             )
+
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Full Name") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                enabled = !isLoading,
+                colors = textFieldColors
+            )
+            Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
                 value = email,
@@ -207,8 +260,12 @@ fun SignUpScreen(
                         passwordError = "Passwords do not match."
                     } else if (password.length < 6) {
                         passwordError = "Password must be at least 6 characters."
-                    } else {
-                        authViewModel.signUp(email, password)
+                    }
+                    else if (name.isBlank()) {
+                        passwordError = "Please enter your name."
+                    }
+                    else {
+                        authViewModel.signUp(email, password,name)
                     }
                 },
                 modifier = Modifier.fillMaxWidth().height(50.dp),
