@@ -21,10 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.issuespotter.models.Report
 
 @Composable
-fun ReportListItem(report: Report) {
+fun ReportListItem(report: com.example.issuespotter.screens.Report) {
     val statusColor = when (report.status.lowercase()) {
         "open" -> Color(0xFF4CAF50)
         "in progress" -> Color(0xFFFFC107)

@@ -1,8 +1,9 @@
 package com.example.issuespotter.screens
 
+// Import theme toggle icons
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable // Added for item clicks
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -20,24 +21,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Article
-import androidx.compose.material.icons.filled.AccountCircle
-// Import theme toggle icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Article
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,8 +40,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -83,7 +73,6 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-
 
 
 @Serializable
@@ -136,18 +125,19 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
             }
         }
     }
-
-    val navItems = listOf(
-        NavigationItem("Home", "home", Icons.AutoMirrored.Filled.Article, Icons.Outlined.Article),
-        NavigationItem("Profile", "profile", Icons.Filled.AccountCircle, Icons.Outlined.AccountCircle),
-        NavigationItem("Rating", "rating", Icons.Filled.Star, Icons.Outlined.Star)
-    )
+//
+//    val navItems = listOf(
+//        NavigationItem("Home", "home", Icons.AutoMirrored.Filled.Article, Icons.Outlined.Article),
+//        NavigationItem("Profile", "profile", Icons.Filled.AccountCircle, Icons.Outlined.AccountCircle),
+//        NavigationItem("Rating", "rating", Icons.Filled.Star, Icons.Outlined.Star)
+//    )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     LaunchedEffect(Unit) {
         loadReports(authViewModel, { reports = it }, { error = it }, { isLoading = false })
+        authViewModel.fetchUserSpecificReports()
     }
 
     val currentBackgroundColor = if (isDarkTheme) Color(0xFF06154C) else Color(0xFFF0F0F0)
@@ -202,55 +192,8 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
                 ModalDrawerSheet(
                     drawerContainerColor = navDrawerContainerColor
                 ) {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    navItems.forEach { item ->
-                        NavigationDrawerItem(
-                            label = { Text(text = item.title, color = if(item.route == currentRoute) navItemSelectedColor else navItemUnselectedColor ) },
-                            selected = item.route == currentRoute,
-                            onClick = {
-                                scope.launch { drawerState.close() }
-                                if (item.route != currentRoute) {
-                                    navController.navigate(item.route) {
-                                        popUpTo(navController.graph.startDestinationId)
-                                        launchSingleTop = true
-                                    }
-                                }
-                            },
-                            icon = {
-                                Icon(
-                                    imageVector = if (item.route == currentRoute) item.selectedIcon else item.unselectedIcon,
-                                    contentDescription = item.title,
-                                    tint = if(item.route == currentRoute) navItemSelectedColor else navItemUnselectedColor
-                                )
-                            },
-                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
-                            colors = NavigationDrawerItemDefaults.colors(
-                                unselectedTextColor = navItemUnselectedColor,
-                                unselectedIconColor = navItemUnselectedColor,
-                                selectedTextColor = navItemSelectedColor,
-                                selectedIconColor = navItemSelectedColor,
-                                selectedContainerColor = navItemSelectedContainerColor
-                            )
-                        )
-                    }
-                    Divider(modifier = Modifier.padding(vertical = 16.dp), color = navItemUnselectedColor.copy(alpha = 0.2f))
-                    NavigationDrawerItem(
-                        label = { Text("Sign Out", color = navItemUnselectedColor) },
-                        selected = false,
-                        onClick = {
-                            scope.launch { drawerState.close() }
-                            authViewModel.logout()
-                            navController.navigate("login") {
-                                popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                                launchSingleTop = true
-                            }
-                        },
-                        icon = { Icon(Icons.Default.Logout, contentDescription = "Sign Out", tint = navItemUnselectedColor) },
-                        colors = NavigationDrawerItemDefaults.colors(
-                            unselectedTextColor = navItemUnselectedColor,
-                            unselectedIconColor = navItemUnselectedColor
-                        )
-                    )
+                    ProfileScreen(navController = navController, authViewModel = authViewModel)
+//
                 }
             },
             drawerState = drawerState,
@@ -299,7 +242,9 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
                         onCategorySelected = { category ->
                             selectedFilterCategory = if (category == "ALL") null else category
                         },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
                         isDarkTheme = isDarkTheme
                     )
 
@@ -411,7 +356,9 @@ fun ReportListItem(
         modifier = Modifier.clickable { onItemClick(report.id) }
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 20.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 20.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -481,7 +428,9 @@ fun CategoryFilterDropdown(
             readOnly = true,
             label = { Text("Filter by Category", color = currentLabelColor) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.fillMaxWidth().menuAnchor(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(),
             colors = textFieldColors,
             shape = RoundedCornerShape(12.dp)
         )
