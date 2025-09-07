@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,13 +27,12 @@ import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Article
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
@@ -48,12 +46,12 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,24 +69,25 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.issuespotter.auth.AuthViewModel
+import com.example.issuespotter.models.Report
+import com.example.issuespotter.ui_common.ReportListItem
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 
 
-@Serializable
-data class Report(
-    val id: String,
-    val title: String,
-    val description: String,
-    val category: String,
-    val image_url: String? = null,
-    val user_id: String,
-    val status: String = "Open",
-    val created_at: String? = null,
-    val address: String? = null,
-)
+//@Serializable
+//data class Report(
+//    val id: String,
+//    val title: String,
+//    val description: String,
+//    val category: String,
+//    val image_url: String? = null,
+//    val user_id: String,
+//    val status: String = "Open",
+//    val created_at: String? = null,
+//    val address: String? = null,
+//)
 
 data class NavigationItem(
     val title: String,
@@ -109,17 +108,20 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    val navItems = listOf(
-        NavigationItem("Home", "home", Icons.AutoMirrored.Filled.Article, Icons.Outlined.Article),
-        NavigationItem("Profile", "profile", Icons.Filled.AccountCircle, Icons.Outlined.AccountCircle),
-        NavigationItem("Rating", "rating", Icons.Filled.Star, Icons.Outlined.Star)
-    )
+//    val navItems = listOf(
+//        NavigationItem("Home", "home", Icons.AutoMirrored.Filled.Article, Icons.Outlined.Article),
+//        NavigationItem("Profile", "profile", Icons.Filled.AccountCircle, Icons.Outlined.AccountCircle),
+//        NavigationItem("Rating", "rating", Icons.Filled.Star, Icons.Outlined.Star)
+//    )
+
+    val userReports by authViewModel.userSpecificReports.collectAsState()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     LaunchedEffect(Unit) {
         loadReports(authViewModel, { reports = it }, { error = it }, { isLoading = false })
+        authViewModel.fetchUserSpecificReports()
     }
 
     Box(
@@ -172,54 +174,65 @@ fun HomeScreen(navController: NavController, authViewModel: AuthViewModel) {
                 ModalDrawerSheet(
                     drawerContainerColor = Color(0xFF06154C)
                 ) {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    navItems.forEach { item ->
-                        NavigationDrawerItem(
-                            label = { Text(text = item.title) },
-                            selected = item.route == currentRoute,
-                            onClick = {
-                                scope.launch { drawerState.close() }
-                                if (item.route != currentRoute) {
-                                    navController.navigate(item.route) {
-                                        popUpTo(navController.graph.startDestinationId)
-                                        launchSingleTop = true
-                                    }
-                                }
-                            },
-                            icon = {
-                                Icon(
-                                    imageVector = if (item.route == currentRoute) item.selectedIcon else item.unselectedIcon,
-                                    contentDescription = item.title
-                                )
-                            },
-                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
-                            colors = NavigationDrawerItemDefaults.colors(
-                                unselectedTextColor = Color.White.copy(alpha = 0.8f),
-                                unselectedIconColor = Color.White.copy(alpha = 0.8f),
-                                selectedTextColor = Color.White,
-                                selectedIconColor = Color.White,
-                                selectedContainerColor = Color.White.copy(alpha = 0.1f)
-                            )
-                        )
-                    }
-                    Divider(modifier = Modifier.padding(vertical = 16.dp), color = Color.White.copy(alpha = 0.2f))
-                    NavigationDrawerItem(
-                        label = { Text("Sign Out") },
-                        selected = false,
-                        onClick = {
-                            scope.launch { drawerState.close() }
-                            authViewModel.logout()
-                            navController.navigate("login") {
-                                popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                                launchSingleTop = true
-                            }
-                        },
-                        icon = { Icon(Icons.Default.Logout, contentDescription = "Sign Out") },
-                        colors = NavigationDrawerItemDefaults.colors(
-                            unselectedTextColor = Color.White.copy(alpha = 0.8f),
-                            unselectedIconColor = Color.White.copy(alpha = 0.8f)
-                        )
-                    )
+//                    Spacer(modifier = Modifier.height(24.dp))
+//                    navItems.forEach { item ->
+//                        NavigationDrawerItem(
+//                            label = { Text(text = item.title) },
+//                            selected = item.route == currentRoute,
+//                            onClick = {
+//                                scope.launch { drawerState.close() }
+//                                if (item.route != currentRoute) {
+//                                    navController.navigate(item.route) {
+//                                        popUpTo(navController.graph.startDestinationId)
+//                                        launchSingleTop = true
+//                                    }
+//                                }
+//                            },
+//                            icon = {
+//                                Icon(
+//                                    imageVector = if (item.route == currentRoute) item.selectedIcon else item.unselectedIcon,
+//                                    contentDescription = item.title
+//                                )
+//                            },
+//                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+//                            colors = NavigationDrawerItemDefaults.colors(
+//                                unselectedTextColor = Color.White.copy(alpha = 0.8f),
+//                                unselectedIconColor = Color.White.copy(alpha = 0.8f),
+//                                selectedTextColor = Color.White,
+//                                selectedIconColor = Color.White,
+//                                selectedContainerColor = Color.White.copy(alpha = 0.1f)
+//                            )
+//                        )
+//                    }
+//                    Divider(modifier = Modifier.padding(vertical = 16.dp), color = Color.White.copy(alpha = 0.2f))
+//                    NavigationDrawerItem(
+//                        label = { Text("Sign Out") },
+//                        selected = false,
+//                        onClick = {
+//                            scope.launch { drawerState.close() }
+//                            authViewModel.logout()
+//                            navController.navigate("login") {
+//                                popUpTo(navController.graph.startDestinationId) { inclusive = true }
+//                                launchSingleTop = true
+//                            }
+//                        },
+//                        icon = { Icon(Icons.Default.Logout, contentDescription = "Sign Out") },
+//                        colors = NavigationDrawerItemDefaults.colors(
+//                            unselectedTextColor = Color.White.copy(alpha = 0.8f),
+//                            unselectedIconColor = Color.White.copy(alpha = 0.8f)
+//                        )
+//                    )
+//                }
+                    ProfileScreen(navController = navController, authViewModel = authViewModel)
+
+                    // Divider to separate profile from rating
+//                    Divider(
+//                        modifier = Modifier.padding(vertical = 16.dp),
+//                        color = Color.White.copy(alpha = 0.2f)
+//                    )
+//
+//                    // New User Rating Section
+//                    UserRatingSection(reportCount = userReports.size)
                 }
             },
             drawerState = drawerState,
@@ -335,42 +348,45 @@ private suspend fun loadReports(
     }
 }
 
-@Composable
-fun ReportListItem(report: Report) {
-    val statusColor = when (report.status.lowercase()) {
-        "open" -> Color(0xFF4CAF50)
-        "in progress" -> Color(0xFFFFC107)
-        "resolved" -> Color(0xFF5E35B1)
-        else -> Color(0xFF9E9E9E)
-    }
-    val displayAddress = report.description.take(50) + if (report.description.length > 50) "..." else ""
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF7E57C2).copy(alpha = 0.9f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 20.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = report.title, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = displayAddress, color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Category: ${report.category}", color = Color.White.copy(alpha = 0.6f), fontSize = 12.sp)
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-            Surface(shape = RoundedCornerShape(50), color = statusColor) {
-                Text(
-                    text = report.status,
-                    color = Color.White,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-        }
-    }
-}
+
+
+
+//@Composable
+//fun ReportListItem(report: Report) {
+//    val statusColor = when (report.status.lowercase()) {
+//        "open" -> Color(0xFF4CAF50)
+//        "in progress" -> Color(0xFFFFC107)
+//        "resolved" -> Color(0xFF5E35B1)
+//        else -> Color(0xFF9E9E9E)
+//    }
+//    val displayAddress = report.description.take(50) + if (report.description.length > 50) "..." else ""
+//    Card(
+//        shape = RoundedCornerShape(16.dp),
+//        colors = CardDefaults.cardColors(containerColor = Color(0xFF7E57C2).copy(alpha = 0.9f)),
+//        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+//    ) {
+//        Row(
+//            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 20.dp),
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.SpaceBetween
+//        ) {
+//            Column(modifier = Modifier.weight(1f)) {
+//                Text(text = report.title, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+//                Spacer(modifier = Modifier.height(4.dp))
+//                Text(text = displayAddress, color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
+//                Spacer(modifier = Modifier.height(4.dp))
+//                Text(text = "Category: ${report.category}", color = Color.White.copy(alpha = 0.6f), fontSize = 12.sp)
+//            }
+//            Spacer(modifier = Modifier.width(16.dp))
+//            Surface(shape = RoundedCornerShape(50), color = statusColor) {
+//                Text(
+//                    text = report.status,
+//                    color = Color.White,
+//                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+//                    fontSize = 12.sp,
+//                    fontWeight = FontWeight.SemiBold
+//                )
+//            }
+//        }
+//    }
+//}
