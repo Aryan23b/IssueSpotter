@@ -57,6 +57,7 @@ fun SignUpScreen(
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
+    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -155,6 +156,17 @@ fun SignUpScreen(
             )
 
             OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Full Name") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                enabled = !isLoading,
+                colors = textFieldColors
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") },
@@ -207,8 +219,12 @@ fun SignUpScreen(
                         passwordError = "Passwords do not match."
                     } else if (password.length < 6) {
                         passwordError = "Password must be at least 6 characters."
-                    } else {
-                        authViewModel.signUp(email, password)
+                    }
+                    else if (name.isBlank()) {
+                        passwordError = "Please enter your name."
+                    }
+                    else {
+                        authViewModel.signUp(email, password,name)
                     }
                 },
                 modifier = Modifier.fillMaxWidth().height(50.dp),
