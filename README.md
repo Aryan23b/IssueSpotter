@@ -38,8 +38,9 @@ Live Demo
 Download APK
 
 Screenshots:
-<img src="screenshots/bb9ce3e0-3846-4243-bd99-6d73ce595217.jpg" width="250"/> | <img src="screenshots/894bbe4e-4822-48ff-b835-6462011c56c6.jpg" width="250"/> | <img src="screenshots/95217f78-bc35-4751-9c0a-df1de93ade09.jpg" width="250"/>
-<img src="screenshots/16b34235-8da3-407f-8589-4d000d007f77.jpg" width="250"/> | <img src="screenshots/a6e75fff-8263-40ce-b2a1-719e7b866e72.jpg" width="250"/> |
+![IMG-20250910-WA0021](https://github.com/user-attachments/assets/4b3db1e4-107e-482c-8422-072cc97315b6)
+
+
 Login Screen	Report Issues	View Issues
 
 Registration & Login: Create an account or login with email/password
