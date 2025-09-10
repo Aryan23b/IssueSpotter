@@ -35,39 +35,50 @@ Image Support: Upload photos of issues for better context
 
 Demo
 Live Demo
-Download APK
+https://youtu.be/23NNdrc1SDA
 
-Screenshots:
-![WhatsApp Image 2025-09-10 at 19 31 08_3005d1dc](https://github.com/user-attachments/assets/4c3b3fb9-b48b-4807-9099-b07aca8348ca)
-![WhatsApp Image 2025-09-10 at 19 31 09_f3a6ed3e](https://github.com/user-attachments/assets/7d1cee41-db9e-4eeb-8e23-18f2b490da8e)
-![WhatsApp Image 2025-09-10 at 19 31 09_903c06bc](https://github.com/user-attachments/assets/1285c312-0955-41ee-81be-8113ae6b41dc)
-![WhatsApp Image 2025-09-10 at 19 31 10_0dee1847](https://github.com/user-attachments/assets/cab4722e-562b-41f2-a087-00ddc3a70f0d)
-![WhatsApp Image 2025-09-10 at 19 31 10_44109be3](https://github.com/user-attachments/assets/54740687-fc2c-4b36-8e1b-6e1179f97241)
-![WhatsApp Image 2025-09-10 at 19 31 10_55e981e9](https://github.com/user-attachments/assets/f19d9232-8934-4800-b171-1c8d223cfd4f)
-![WhatsApp Image 2025-09-10 at 19 31 11_7420a9cd](https://github.com/user-attachments/assets/1269ac6d-761b-4124-8ec7-3380b938b576)
-![WhatsApp Image 2025-09-10 at 19 31 11_d1976f09](https://github.com/user-attachments/assets/0aee7935-5468-4b63-90dd-1e7fb557ef00)
-![WhatsApp Image 2025-09-10 at 19 31 12_41b1e1bf](https://github.com/user-attachments/assets/ff2dd3c4-5265-4f7c-8101-8d3683123b84)
-![WhatsApp Image 2025-09-10 at 19 37 26_bea93e42](https://github.com/user-attachments/assets/b82b919d-c0bf-49d7-b743-2c55c7cdd70d)
-![WhatsApp Image 2025-09-10 at 19 37 26_de3dfea9](https://github.com/user-attachments/assets/6ea913b8-4203-478f-8cca-e49ab921f467)
-![WhatsApp Image 2025-09-10 at 19 37 26_3b80abe2](https://github.com/user-attachments/assets/f5e0ec06-f55b-432f-93a1-1a271b638a8a)
-![WhatsApp Image 2025-09-10 at 19 37 27_3e38b0fd](https://github.com/user-attachments/assets/96d55013-28b9-4d91-8be4-03efbcd69ce3)
-![WhatsApp Image 2025-09-10 at 19 37 28_fc18c3b0](https://github.com/user-attachments/assets/4e9262e4-2673-42dd-b24e-de3c0e8b5077)
-![WhatsApp Image 2025-09-10 at 19 37 28_c557407f](https://github.com/user-attachments/assets/795c4eab-e594-443a-a574-30444dc118b1)
-![WhatsApp Image 2025-09-10 at 19 37 29_6586072f](https://github.com/user-attachments/assets/364d56d6-181f-4be6-ae3f-9afdbad5bc87)
-![WhatsApp Image 2025-09-10 at 19 37 29_fbe7a47c](https://github.com/user-attachments/assets/ce932b55-bffa-4bcc-a112-0143accbb2f7)
+# 📱 App Screenshots
 
+### User App (Mobile)
 
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/4c3b3fb9-b48b-4807-9099-b07aca8348ca" width="250"></td>
+    <td><img src="https://github.com/user-attachments/assets/7d1cee41-db9e-4eeb-8e23-18f2b490da8e" width="250"></td>
+    <td><img src="https://github.com/user-attachments/assets/1285c312-0955-41ee-81be-8113ae6b41dc" width="250"></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/cab4722e-562b-41f2-a087-00ddc3a70f0d" width="250"></td>
+    <td><img src="https://github.com/user-attachments/assets/54740687-fc2c-4b36-8e1b-6e1179f97241" width="250"></td>
+    <td><img src="https://github.com/user-attachments/assets/f19d9232-8934-4800-b171-1c8d223cfd4f" width="250"></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/1269ac6d-761b-4124-8ec7-3380b938b576" width="250"></td>
+    <td><img src="https://github.com/user-attachments/assets/0aee7935-5468-4b63-90dd-1e7fb557ef00" width="250"></td>
+    <td><img src="https://github.com/user-attachments/assets/ff2dd3c4-5265-4f7c-8101-8d3683123b84" width="250"></td>
+  </tr>
+</table>
 
+---
 
+### 🖥️ Admin Dashboard
 
-
-
-
-
-
-
-
-
+<table>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/b82b919d-c0bf-49d7-b743-2c55c7cdd70d" width="300"></td>
+    <td><img src="https://github.com/user-attachments/assets/6ea913b8-4203-478f-8cca-e49ab921f467" width="300"></td>
+    <td><img src="https://github.com/user-attachments/assets/f5e0ec06-f55b-432f-93a1-1a271b638a8a" width="300"></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/96d55013-28b9-4d91-8be4-03efbcd69ce3" width="300"></td>
+    <td><img src="https://github.com/user-attachments/assets/4e9262e4-2673-42dd-b24e-de3c0e8b5077" width="300"></td>
+    <td><img src="https://github.com/user-attachments/assets/795c4eab-e594-443a-a574-30444dc118b1" width="300"></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/364d56d6-181f-4be6-ae3f-9afdbad5bc87" width="300"></td>
+    <td><img src="https://github.com/user-attachments/assets/ce932b55-bffa-4bcc-a112-0143accbb2f7" width="300"></td>
+  </tr>
+</table>
 
 
 
