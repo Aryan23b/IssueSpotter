@@ -261,7 +261,7 @@ Push & open a Pull Request 🚀
 🐙 GitHub: [aryan23b](https://github.com/aryan23b) • [mohitAnuragi](https://github.com/mohitAnuragi) • [purvil3105](https://github.com/purvil3105) |
            
 
-💼 LinkedIn: Aryan Baranwal
+💼 LinkedIn: [Aryan Baranwal](https://www.linkedin.com/in/aryan-baranwal-75b9b129a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)•
  [Mohit A.](https://www.linkedin.com/in/mohit-a-52989b2b2) • [Purvil Patel](https://www.linkedin.com/in/purvil-patel-8201972a1) |
 
 ⭐ If you found this project helpful, please give it a star on GitHub! ⭐
