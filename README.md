@@ -76,7 +76,7 @@ With **Jetpack Compose UI** and **Supabase backend**, it delivers a **seamless, 
 
 ## ⚙ Installation  
 
-```bash
+bash
 # Clone the repository
 git clone [https://github.com/Aryan23b/IssueSpotter].git
 cd IssueSpotter
