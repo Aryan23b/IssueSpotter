@@ -49,8 +49,6 @@ With **Jetpack Compose UI** and **Supabase backend**, it delivers a **seamless, 
 
 ## 📸 Screenshots  
 
-## 📸 Screenshots  
-
 <p align="center">
   <img src="https://github.com/user-attachments/assets/7d1cee41-db9e-4eeb-8e23-18f2b490da8e" width="250" />
   <img src="https://github.com/user-attachments/assets/1285c312-0955-41ee-81be-8113ae6b41dc" width="250" />
@@ -63,7 +61,6 @@ With **Jetpack Compose UI** and **Supabase backend**, it delivers a **seamless, 
   <img src="https://github.com/user-attachments/assets/ff2dd3c4-5265-4f7c-8101-8d3683123b84" width="250" />
 </p>
 
-
 <p align="center">
   <img src="https://github.com/user-attachments/assets/6ea913b8-4203-478f-8cca-e49ab921f467" width="250" />
   <img src="https://github.com/user-attachments/assets/f5e0ec06-f55b-432f-93a1-1a271b638a8a" width="250" />
@@ -74,18 +71,19 @@ With **Jetpack Compose UI** and **Supabase backend**, it delivers a **seamless, 
   <img src="https://github.com/user-attachments/assets/96d55013-28b9-4d91-8be4-03efbcd69ce3" width="250" />
   <img src="https://github.com/user-attachments/assets/795c4eab-e594-443a-a574-30444dc118b1" width="250" />
 </p>
+
 ---
 
 ## ⚙ Installation  
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/IssueSpotter.git
+git clone [https://github.com/Aryan23b/IssueSpotter].git
 cd IssueSpotter
 
 
-
 🚀 Usage
+
 🔑 Register/Login – Secure Supabase authentication
 
 📝 Report Issues – Add title, description, category & location
@@ -97,6 +95,7 @@ cd IssueSpotter
 👍 Community Interaction – Upvote important issues
 
 🛠 Tech Stack
+
 Frontend (Mobile)
 
 ⚛ Kotlin – Primary language
@@ -134,51 +133,53 @@ Development Tools
 🌀 Git
 
 🏗 Architecture
-pgsql
-Copy code
+
 Presentation Layer (Jetpack Compose)
- ├── UI Components
- ├── Navigation
- ├── ViewModels
- └── State Management
+├── UI Components
+├── Navigation
+├── ViewModels
+└── State Management
 
 Data Layer
- ├── Supabase Client
- ├── Location Services
- ├── Image Processing
- └── Local Storage
+├── Supabase Client
+├── Location Services
+├── Image Processing
+└── Local Storage
 
 Infrastructure
- ├── Supabase Backend
- ├── PostgreSQL Database
- ├── Supabase Storage
- └── Google Maps API
+├── Supabase Backend
+├── PostgreSQL Database
+├── Supabase Storage
+└── Google Maps API
+
 🧩 Challenges & Solutions
-1. Real-time Upvote Synchronization
+
+Real-time Upvote Synchronization
 
 📌 Problem: Keeping votes consistent
 
 ✅ Solution: Supabase RLS + PostgreSQL atomic updates
 
-2. Location Services
+Location Services
 
 📌 Problem: Handling permissions & precision
 
 ✅ Solution: Google Maps Compose + fallback
 
-3. Image Upload & Storage
+Image Upload & Storage
 
 📌 Problem: Large image handling
 
 ✅ Solution: Compression + caching
 
-4. Offline Functionality
+Offline Functionality
 
 📌 Problem: Bad UX without internet
 
 ✅ Solution: Retry + graceful error handling
 
 🚀 Future Improvements
+
 🔔 Push notifications for updates
 
 📂 Offline data caching
@@ -194,23 +195,25 @@ Infrastructure
 📊 Analytics dashboard for trends
 
 🤝 Contributing
+
 We welcome contributions! 🎉
 
 Fork the repo
 
 Create a feature branch
 
-bash
-Copy code
 git checkout -b feature/amazing-feature
+
+
 Commit changes
 
-bash
-Copy code
 git commit -m "Add amazing feature"
+
+
 Push & open a PR 🚀
 
 📜 Credits
+
 ⚡ Supabase – Open-source Firebase alternative
 
 💻 JetBrains – Kotlin & dev tools
@@ -221,19 +224,23 @@ Push & open a PR 🚀
 
 🙏 Special thanks to the open-source community ❤
 
-📬 Contact
-👨‍💻 Authors: Aryan Baranwal • Mohit Anuragi • Purvil Patel
-
-## 📬 Contact
+## 📬 Contact  
 
 📧 **Emails**  
 - [baranwalaryan23@gmail.com](mailto:baranwalaryan23@gmail.com)  
 - [anuragimohit468@gmail.com](mailto:anuragimohit468@gmail.com)  
 - [patelpurvil3105@gmail.com](mailto:patelpurvil3105@gmail.com)  
 
-| Platform    | Handle / URL |
-|-------------|--------------|
-| **GitHub**  | [aryan23b](https://github.com/aryan23b) • [mohitAnuragi](https://github.com/mohitAnuragi) • [purvil3105](https://github.com/purvil3105) |
-| **LinkedIn**| [Mohit A.](https://www.linkedin.com/in/mohit-a-52989b2b2) • [Purvil Patel](https://www.linkedin.com/in/purvil-patel-8201972a1) |
+👨‍💻 **Authors**  
+- [Aryan Baranwal](https://www.linkedin.com/in/aryan-baranwal-75b9b129a)  
+- [Mohit Anuragi](https://www.linkedin.com/in/mohit-a-52989b2b2)  
+- [Purvil Patel](https://www.linkedin.com/in/purvil-patel-8201972a1)  
+
+### 🔗 GitHub Profiles  
+[![Aryan](https://img.shields.io/badge/GitHub-aryan23b-black?logo=github)](https://github.com/aryan23b)  
+[![Mohit](https://img.shields.io/badge/GitHub-mohitAnuragi-black?logo=github)](https://github.com/mohitAnuragi)  
+[![Purvil](https://img.shields.io/badge/GitHub-purvil3105-black?logo=github)](https://github.com/purvil3105)  
+ 
+
 
 ⭐ If you found this project helpful, don’t forget to star the repo on GitHub! ⭐
