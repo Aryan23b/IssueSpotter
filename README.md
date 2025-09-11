@@ -74,15 +74,15 @@ With **Jetpack Compose UI** and **Supabase backend**, it delivers a **seamless, 
 
 ---
 
-## ⚙ Installation  
+# ⚙ Installation  
 
-bash
-# Clone the repository
-git clone [https://github.com/Aryan23b/IssueSpotter].git
+## Clone the repository
+git clone https://github.com/Aryan23b/IssueSpotter.git
+
 cd IssueSpotter
 
 
-🚀 Usage
+## 🚀 Usage
 
 🔑 Register/Login – Secure Supabase authentication
 
@@ -94,9 +94,9 @@ cd IssueSpotter
 
 👍 Community Interaction – Upvote important issues
 
-🛠 Tech Stack
+## 🛠 Tech Stack
 
-Frontend (Mobile)
+### Frontend (Mobile)
 
 ⚛ Kotlin – Primary language
 
@@ -106,7 +106,7 @@ Frontend (Mobile)
 
 🔄 ViewModel, LiveData, Navigation
 
-Backend & Database
+### Backend & Database
 
 🔧 Supabase – Firebase alternative
 
@@ -116,7 +116,7 @@ Backend & Database
 
 💾 Supabase Storage – Image uploads
 
-APIs & Services
+## APIs & Services
 
 📍 Google Maps SDK – Location services
 
@@ -124,7 +124,7 @@ APIs & Services
 
 🖼 Coil – Image loading
 
-Development Tools
+## Development Tools
 
 🖥 Android Studio
 
@@ -132,53 +132,66 @@ Development Tools
 
 🌀 Git
 
-🏗 Architecture
+# 🏗 Architecture
 
 Presentation Layer (Jetpack Compose)
+
 ├── UI Components
+
 ├── Navigation
+
 ├── ViewModels
+
 └── State Management
 
+
 Data Layer
+
 ├── Supabase Client
+
 ├── Location Services
+
 ├── Image Processing
+
 └── Local Storage
 
 Infrastructure
+
 ├── Supabase Backend
+
 ├── PostgreSQL Database
+
 ├── Supabase Storage
+
 └── Google Maps API
 
-🧩 Challenges & Solutions
+# 🧩 Challenges & Solutions
 
-Real-time Upvote Synchronization
+### Real-time Upvote Synchronization
 
 📌 Problem: Keeping votes consistent
 
 ✅ Solution: Supabase RLS + PostgreSQL atomic updates
 
-Location Services
+### Location Services
 
 📌 Problem: Handling permissions & precision
 
 ✅ Solution: Google Maps Compose + fallback
 
-Image Upload & Storage
+### Image Upload & Storage
 
 📌 Problem: Large image handling
 
 ✅ Solution: Compression + caching
 
-Offline Functionality
+### Offline Functionality
 
 📌 Problem: Bad UX without internet
 
 ✅ Solution: Retry + graceful error handling
 
-🚀 Future Improvements
+# 🚀 Future Improvements
 
 🔔 Push notifications for updates
 
@@ -194,7 +207,7 @@ Offline Functionality
 
 📊 Analytics dashboard for trends
 
-🤝 Contributing
+# 🤝 Contributing
 
 We welcome contributions! 🎉
 
@@ -212,7 +225,7 @@ git commit -m "Add amazing feature"
 
 Push & open a PR 🚀
 
-📜 Credits
+# 📜 Credits
 
 ⚡ Supabase – Open-source Firebase alternative
 
@@ -224,7 +237,7 @@ Push & open a PR 🚀
 
 🙏 Special thanks to the open-source community ❤
 
-## 📬 Contact  
+# 📬 Contact  
 
 📧 **Emails**  
 - [baranwalaryan23@gmail.com](mailto:baranwalaryan23@gmail.com)  
