@@ -224,16 +224,16 @@ Push & open a PR 🚀
 📬 Contact
 👨‍💻 Authors: Aryan Baranwal • Mohit Anuragi • Purvil Patel
 
-📧 Emails:
+## 📬 Contact
 
-baranwalaryan23@gmail.com
+📧 **Emails**  
+- [baranwalaryan23@gmail.com](mailto:baranwalaryan23@gmail.com)  
+- [anuragimohit468@gmail.com](mailto:anuragimohit468@gmail.com)  
+- [patelpurvil3105@gmail.com](mailto:patelpurvil3105@gmail.com)  
 
-anuragimohit468@gmail.com
-
-patelpurvil3105@gmail.com
-
-🐙 GitHub: aryan23b • mohitAnuragi • purvil3105
-
-💼 LinkedIn: Aryan Baranwal • Mohit A. • Purvil Patel
+| Platform    | Handle / URL |
+|-------------|--------------|
+| **GitHub**  | [aryan23b](https://github.com/aryan23b) • [mohitAnuragi](https://github.com/mohitAnuragi) • [purvil3105](https://github.com/purvil3105) |
+| **LinkedIn**| [Mohit A.](https://www.linkedin.com/in/mohit-a-52989b2b2) • [Purvil Patel](https://www.linkedin.com/in/purvil-patel-8201972a1) |
 
 ⭐ If you found this project helpful, don’t forget to star the repo on GitHub! ⭐
