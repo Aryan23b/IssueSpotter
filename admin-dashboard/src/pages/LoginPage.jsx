@@ -94,7 +94,7 @@ const LoginPage = () => {
             >
               <img 
                 src="/src/assets/app_logo1.png" 
-                alt="CivicTrack Logo" 
+                alt="IssueSpotter Logo" 
                 style={{ 
                   width: '100%', 
                   height: '100%', 
@@ -103,7 +103,7 @@ const LoginPage = () => {
               />
             </Box>
             <Typography variant="h4" component="h1" gutterBottom>
-              CivicTrack
+              IssueSpotter
             </Typography>
             <Typography variant="h6" color="textSecondary" gutterBottom>
               Admin Dashboard
@@ -199,7 +199,7 @@ const LoginPage = () => {
               Demo Credentials:
             </Typography>
             <Typography variant="caption" color="textSecondary" display="block">
-              Email: admin@civictrack.com
+              Email: admin@issue.com
             </Typography>
             <Typography variant="caption" color="textSecondary">
               Password: admin123

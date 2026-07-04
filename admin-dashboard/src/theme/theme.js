@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles'
 
-// CivicTrack Color Palette (inspired by civic/government themes)
+// IssueSpotter Color Palette (inspired by civic/government themes)
 const palette = {
   primary: {
     main: '#2563eb', // Blue - trustworthy, professional
