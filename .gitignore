@@ -13,3 +13,18 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Database dumps (contain user credentials) - never commit
+*.backup
+*.backup.gz
+db_cluster-*
+
+# Kotlin compiler session/error files
+.kotlin/
+
+# Secrets
+.env
+!.env.example
+
+# Internal documentation (kept local)
+/docs/

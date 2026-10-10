@@ -260,38 +260,19 @@ private val _reports = MutableStateFlow<List<Report>>(emptyList()) // Changed to
 
             try {
 
+                // upvote_count is incremented by a database trigger on report_upvotes;
+                // clients are not allowed to update reports directly.
                 supabase.from("report_upvotes").insert(
                     mapOf("report_id" to reportId, "user_id" to userId)
                 )
 
-                val currentReport = supabase.from("reports")
-                    .select {
-                        filter {
-                            eq("id", reportId)
-                        }
-                    }
-                    .decodeSingle<Report>()
-
-                val currentCount = currentReport.upvote_count ?: 0
-                val newCount = currentCount + 1
-
-                supabase.from("reports").update(
-                    mapOf("upvote_count" to newCount)
-                ) {
-                    filter {
-                        eq("id", reportId)
-                    }
-                }
-
-
                 _userUpvotedReports.value = _userUpvotedReports.value + reportId
                 _isUpvoting.value = Pair(reportId, false)
-
 
                 val currentState = _reportDetailState.value
                 if (currentState is ReportDetailState.Success) {
                     val updatedReport = currentState.report.copy(
-                        upvote_count = newCount
+                        upvote_count = (currentState.report.upvote_count ?: 0) + 1
                     )
                     _reportDetailState.value = ReportDetailState.Success(updatedReport)
                 }

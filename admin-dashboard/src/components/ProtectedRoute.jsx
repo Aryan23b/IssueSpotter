@@ -1,9 +1,9 @@
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { Box, CircularProgress, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Typography } from '@mui/material'
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading, isAdmin } = useAuth()
+  const { isAuthenticated, loading, isAdmin, signOut } = useAuth()
   const location = useLocation()
 
   if (loading) {
@@ -45,6 +45,9 @@ const ProtectedRoute = ({ children }) => {
         <Typography variant="body1" color="textSecondary">
           You don't have admin privileges to access this dashboard.
         </Typography>
+        <Button variant="outlined" onClick={signOut}>
+          Sign out
+        </Button>
       </Box>
     )
   }

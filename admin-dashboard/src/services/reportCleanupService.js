@@ -100,27 +100,30 @@ export class ReportCleanupService {
         .insert([cleanupLog])
 
       if (logError) {
-        console.error('Error creating cleanup log:', logError)
-        // Continue with deletion even if logging fails
+        // Don't delete without an audit trail (also fails here for non-admins)
+        console.error('Error creating cleanup log, skipping deletion:', logError)
+        return { success: false, error: logError.message }
       }
 
-      // Delete the reports
-      const { error: deleteError } = await supabase
+      // Delete exactly the reports that were logged. RLS silently filters
+      // rows rather than erroring, so read back what was actually deleted.
+      const { data: deletedRows, error: deleteError } = await supabase
         .from('reports')
         .delete()
-        .eq('status', 'resolved')
-        .lt('updated_at', cutoffDate.toISOString())
+        .in('id', reportsToDelete.map(r => r.id))
+        .select('id')
 
       if (deleteError) {
         console.error('Error deleting reports:', deleteError)
         return { success: false, error: deleteError.message }
       }
 
-      console.log(`Successfully deleted ${reportsToDelete.length} resolved reports`)
-      
-      return { 
-        success: true, 
-        deleted: reportsToDelete.length, 
+      const deletedCount = deletedRows?.length ?? 0
+      console.log(`Successfully deleted ${deletedCount} resolved reports`)
+
+      return {
+        success: true,
+        deleted: deletedCount,
         reports: reportsToDelete,
         cutoffDate: cutoffDate.toISOString()
       }

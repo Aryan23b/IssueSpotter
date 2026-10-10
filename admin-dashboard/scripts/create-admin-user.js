@@ -1,11 +1,36 @@
-// Script to create admin user in Supabase Auth
-// Run this in Node.js environment with Supabase admin credentials
+// Script to create an admin user in Supabase Auth and grant admin rights.
+//
+// Requires the SERVICE ROLE key (Supabase > Project Settings > API).
+// Never put the service role key in a VITE_* variable or commit it: VITE_*
+// values are bundled into the browser build.
+//
+// Usage:
+//   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
+//   ADMIN_EMAIL=you@example.com ADMIN_PASSWORD='a-strong-password' \
+//   node scripts/create-admin-user.js
+//
+// Alternative without this script: create the user in the Supabase dashboard,
+// then in the SQL editor run:
+//   insert into public.admins (user_id)
+//   select id from auth.users where email = 'you@example.com'
+//   on conflict do nothing;
 
 import { createClient } from '@supabase/supabase-js'
 
-// You need to use your service role key (not anon key) for admin operations
-const supabaseUrl = process.env.VITE_SUPABASE_URL
-const supabaseServiceRoleKey = process.env.VITE_SUPABASE_ANON_KEY
+const supabaseUrl = process.env.SUPABASE_URL
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+const adminEmail = process.env.ADMIN_EMAIL
+const adminPassword = process.env.ADMIN_PASSWORD
+
+if (!supabaseUrl || !supabaseServiceRoleKey || !adminEmail || !adminPassword) {
+  console.error('Set SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ADMIN_EMAIL and ADMIN_PASSWORD.')
+  process.exit(1)
+}
+
+if (adminPassword.length < 12) {
+  console.error('ADMIN_PASSWORD must be at least 12 characters.')
+  process.exit(1)
+}
 
 const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
   auth: {
@@ -17,8 +42,8 @@ const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
 async function createAdminUser() {
   try {
     const { data: authUser, error: authError } = await supabase.auth.admin.createUser({
-      email: 'admin@issue.com',
-      password: 'admin123',
+      email: adminEmail,
+      password: adminPassword,
       email_confirm: true // Auto-confirm email
     })
 
@@ -29,20 +54,13 @@ async function createAdminUser() {
 
     console.log('Auth user created:', authUser.user.id)
 
-    // Create admin profile record
-    const { data: profileData, error: profileError } = await supabase
-      .from('admin_profiles')
-      .insert({
-        user_id: authUser.user.id,
-        email: 'admin@issue.com',
-        full_name: 'System Administrator',
-        role: 'admin',
-        is_active: true,
-        created_at: new Date().toISOString()
-      })
+    // Grant admin rights (table created by sql/001_admin_rls.sql)
+    const { error: adminError } = await supabase
+      .from('admins')
+      .insert({ user_id: authUser.user.id })
 
-    if (profileError) {
-      console.error('Error creating admin profile:', profileError)
+    if (adminError) {
+      console.error('Error granting admin rights:', adminError)
       return
     }
 

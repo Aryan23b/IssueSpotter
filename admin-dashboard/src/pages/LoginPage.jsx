@@ -21,6 +21,9 @@ import {
 } from '@mui/icons-material'
 import { useAuth } from '../contexts/AuthContext'
 
+const DEMO_EMAIL = 'admin@issuespotter.com'
+const DEMO_PASSWORD = 'IssueSpotter@123'
+
 const LoginPage = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -28,12 +31,12 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const { signIn, isAuthenticated } = useAuth()
+  const { signIn, isAuthenticated, isAdmin } = useAuth()
   const location = useLocation()
 
-  // Redirect if already authenticated
+  // Redirect if already signed in as an admin
   const from = location.state?.from?.pathname || '/dashboard'
-  if (isAuthenticated) {
+  if (isAuthenticated && isAdmin) {
     return <Navigate to={from} replace />
   }
 
@@ -199,11 +202,22 @@ const LoginPage = () => {
               Demo Credentials:
             </Typography>
             <Typography variant="caption" color="textSecondary" display="block">
-              Email: admin@issue.com
+              Email: {DEMO_EMAIL}
             </Typography>
-            <Typography variant="caption" color="textSecondary">
-              Password: admin123
+            <Typography variant="caption" color="textSecondary" display="block">
+              Password: {DEMO_PASSWORD}
             </Typography>
+            <Button
+              size="small"
+              onClick={() => {
+                setEmail(DEMO_EMAIL)
+                setPassword(DEMO_PASSWORD)
+              }}
+              disabled={loading}
+              sx={{ mt: 1, px: 0 }}
+            >
+              Use demo credentials
+            </Button>
           </Box>
         </CardContent>
       </Card>
