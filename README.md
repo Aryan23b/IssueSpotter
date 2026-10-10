@@ -1,259 +1,113 @@
-# 🏙 IssueSpotter  
+# IssueSpotter
 
-[![Android](https://img.shields.io/badge/Platform-Android-green?logo=android)](https://developer.android.com/)  
-[![Kotlin](https://img.shields.io/badge/Language-Kotlin-blue?logo=kotlin)](https://kotlinlang.org/)  
-[![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-purple?logo=jetpackcompose)](https://developer.android.com/jetpack/compose)  
-[![Supabase](https://img.shields.io/badge/Backend-Supabase-teal?logo=supabase)](https://supabase.com/)  
-[![License](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)  
+IssueSpotter is a civic issue reporting platform. Citizens use the Android app to report local problems such as potholes, broken streetlights and water logging, with a photo and GPS location. Municipal staff use the web-based admin dashboard to review reports and update their status.
 
-**IssueSpotter** is a modern Android application that empowers citizens to **report and track community issues** such as potholes, broken streetlights, cleanliness problems, and more.  
-With **Jetpack Compose UI** and **Supabase backend**, it delivers a **seamless, real-time experience** for civic engagement.  
+Demo video: https://youtu.be/23NNdrc1SDA
 
----
-
-## 📑 Table of Contents  
-
-- [✨ Features](#-features)  
-- [📺 Demo](#-demo)  
-- [📸 Screenshots](#-screenshots)  
-- [⚙ Installation](#-installation)  
-- [🚀 Usage](#-usage)  
-- [🛠 Tech Stack](#-tech-stack)  
-- [🏗 Architecture](#-architecture)  
-- [🧩 Challenges & Solutions](#-challenges--solutions)  
-- [🚀 Future Improvements](#-future-improvements)  
-- [🤝 Contributing](#-contributing)  
-- [📜 Credits](#-credits)  
-- [📬 Contact](#-contact)  
-
----
-
-## ✨ Features  
-
-- 🎨 **Modern UI** – Jetpack Compose + Material Design 3  
-- ⚡ **Real-time Reporting** – Instant submission with image upload  
-- 📍 **Location Services** – Google Maps integration for precision  
-- 👍 **Community Engagement** – Upvote system for priority issues  
-- 🔐 **Secure Authentication** – Email/password with Supabase  
-- 🌙 **Dark/Light Mode** – Full theme support  
-- 📊 **Status Tracking** – Open → In Progress → Resolved  
-- 🖼 **Image Support** – Attach photos for better context  
-
----
-
-## 📺 Demo  
-
-🎥 [**Watch Live Demo**](https://youtu.be/23NNdrc1SDA)  
-
----
-
-## 📸 Screenshots  
+## Screenshots
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/7d1cee41-db9e-4eeb-8e23-18f2b490da8e" width="250" />
-  <img src="https://github.com/user-attachments/assets/1285c312-0955-41ee-81be-8113ae6b41dc" width="250" />
-  <img src="https://github.com/user-attachments/assets/cab4722e-562b-41f2-a087-00ddc3a70f0d" width="250" />
+  <img src="https://github.com/user-attachments/assets/1285c312-0955-41ee-81be-8113ae6b41dc" width="220" alt="Home feed" />
+  <img src="https://github.com/user-attachments/assets/1269ac6d-761b-4124-8ec7-3380b938b576" width="220" alt="Report a new issue" />
+  <img src="https://github.com/user-attachments/assets/ff2dd3c4-5265-4f7c-8101-8d3683123b84" width="220" alt="Issue details" />
+  <img src="https://github.com/user-attachments/assets/f19d9232-8934-4800-b171-1c8d223cfd4f" width="220" alt="Profile" />
 </p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/f19d9232-8934-4800-b171-1c8d223cfd4f" width="250" />
-  <img src="https://github.com/user-attachments/assets/1269ac6d-761b-4124-8ec7-3380b938b576" width="250" />
-  <img src="https://github.com/user-attachments/assets/ff2dd3c4-5265-4f7c-8101-8d3683123b84" width="250" />
+  <img src="https://github.com/user-attachments/assets/f5e0ec06-f55b-432f-93a1-1a271b638a8a" width="880" alt="Admin dashboard - reports" />
 </p>
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/6ea913b8-4203-478f-8cca-e49ab921f467" width="250" />
-  <img src="https://github.com/user-attachments/assets/f5e0ec06-f55b-432f-93a1-1a271b638a8a" width="250" />
-  <img src="https://github.com/user-attachments/assets/ce932b55-bffa-4bcc-a112-0143accbb2f7" width="250" />
-</p>
+<p align="center"><em>Home feed, new report, issue details, profile, and the admin dashboard</em></p>
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/96d55013-28b9-4d91-8be4-03efbcd69ce3" width="250" />
-  <img src="https://github.com/user-attachments/assets/795c4eab-e594-443a-a574-30444dc118b1" width="250" />
-</p>
+## Features
 
----
+**Android app**
+- Email and password sign-up and login
+- Report an issue with title, description, category, photo and current location
+- Browse all reports and filter by category
+- Issue details with photo, map location and status
+- Upvote issues (one vote per user) to signal priority
+- Profile with contributor rating and a list of your own reports
+- Light and dark theme
 
-# ⚙ Installation  
+**Admin dashboard**
+- Admin-only access, enforced by the database
+- Reports table with search, status and category filters
+- Report detail view with photo, map and status updates
+- Analytics overview
+- Automatic cleanup of resolved reports after 15 days, with an audit log
 
-## Clone the repository
-git clone https://github.com/Aryan23b/IssueSpotter.git
+## Tech Stack
 
-cd IssueSpotter
+| Area | Technologies |
+|---|---|
+| Android app | Kotlin, Jetpack Compose, Material 3, Navigation Compose, ViewModel, Coil, Google Maps Compose |
+| Admin dashboard | React, Vite, Material UI, Leaflet |
+| Backend | Supabase: PostgreSQL, Auth, Storage, Row Level Security |
 
+## Project Structure
 
-## 🚀 Usage
+```
+IssueSpotter/
+├── app/                      Android app (Kotlin, Jetpack Compose)
+└── admin-dashboard/          Admin web dashboard (React, Vite)
+    └── sql/                  Database schema and security migration
+```
 
-🔑 Register/Login – Secure Supabase authentication
+## Security Model
 
-📝 Report Issues – Add title, description, category & location
+Access rules are enforced in PostgreSQL with Row Level Security, not in the clients:
 
-📸 Upload Photos – Attach images for better visibility
+- Any signed-in user can read reports, create their own reports and upvote each report once.
+- Only users listed in the `admins` table can change a report's status or delete reports.
+- Upvote counts are maintained by a database trigger, so concurrent votes are never lost.
 
-📍 Track Progress – Monitor issue status updates
+See `admin-dashboard/sql/001_admin_rls.sql` for the full policy set.
 
-👍 Community Interaction – Upvote important issues
+## Getting Started
 
-## 🛠 Tech Stack
+### Prerequisites
 
-### Frontend (Mobile)
+- Android Studio with JDK 17 or 21 selected as the Gradle JDK
+- Node.js 18 or later
+- A Supabase project
 
-⚛ Kotlin – Primary language
+### 1. Database
 
-🎨 Jetpack Compose – Declarative UI
+1. In the Supabase SQL editor, run `admin-dashboard/sql/001_admin_rls.sql`.
+2. Create a storage bucket named `reports` and make it public.
+3. Create your admin account in Supabase Auth, then grant it admin rights:
 
-🧩 Material Design 3
+   ```sql
+   insert into public.admins (user_id)
+   select id from auth.users where email = 'you@example.com';
+   ```
 
-🔄 ViewModel, LiveData, Navigation
+### 2. Android app
 
-### Backend & Database
+1. Clone the repository and open the project root in Android Studio.
 
-🔧 Supabase – Firebase alternative
+   ```bash
+   git clone https://github.com/MohitAnuragi/IssueSpotter.git
+   ```
 
-🗄 PostgreSQL + RLS – Relational database
+2. Set your Supabase URL and anon key in `app/src/main/java/com/example/issuespotter/clients/SupabaseClient.kt`.
+3. Set your Google Maps API key in `app/src/main/AndroidManifest.xml`.
+4. Sync Gradle and run the `app` configuration on a device or emulator (Android 7.0, API 24 or later).
 
-🔗 PostgREST – Auto REST API
+### 3. Admin dashboard
 
-💾 Supabase Storage – Image uploads
+```bash
+cd admin-dashboard
+cp .env.example .env      # then fill in your Supabase and Google Maps values
+npm install
+npm run dev
+```
 
-## APIs & Services
+The dashboard runs at `http://localhost:5173`. Sign in with the account you added to the `admins` table.
 
-📍 Google Maps SDK – Location services
+## Authors
 
-🌐 Ktor Client – Networking
-
-🖼 Coil – Image loading
-
-## Development Tools
-
-🖥 Android Studio
-
-⚡ Gradle
-
-🌀 Git
-
-# 🏗 Architecture
-
-Presentation Layer (Jetpack Compose)
-
-├── UI Components
-
-├── Navigation
-
-├── ViewModels
-
-└── State Management
-
-
-Data Layer
-
-├── Supabase Client
-
-├── Location Services
-
-├── Image Processing
-
-└── Local Storage
-
-Infrastructure
-
-├── Supabase Backend
-
-├── PostgreSQL Database
-
-├── Supabase Storage
-
-└── Google Maps API
-
-# 🧩 Challenges & Solutions
-
-### Real-time Upvote Synchronization
-
-📌 Problem: Keeping votes consistent
-
-✅ Solution: Supabase RLS + PostgreSQL atomic updates
-
-### Location Services
-
-📌 Problem: Handling permissions & precision
-
-✅ Solution: Google Maps Compose + fallback
-
-### Image Upload & Storage
-
-📌 Problem: Large image handling
-
-✅ Solution: Compression + caching
-
-### Offline Functionality
-
-📌 Problem: Bad UX without internet
-
-✅ Solution: Retry + graceful error handling
-
-# 🚀 Future Improvements
-
-🔔 Push notifications for updates
-
-📂 Offline data caching
-
-💬 Social features (comments & discussions)
-
-🤖 AI-based automatic categorization
-
-🌍 Multi-language support
-
-🛠 Admin dashboard for municipal authorities
-
-📊 Analytics dashboard for trends
-
-# 🤝 Contributing
-
-We welcome contributions! 🎉
-
-Fork the repo
-
-Create a feature branch
-
-git checkout -b feature/amazing-feature
-
-
-Commit changes
-
-git commit -m "Add amazing feature"
-
-
-Push & open a PR 🚀
-
-# 📜 Credits
-
-⚡ Supabase – Open-source Firebase alternative
-
-💻 JetBrains – Kotlin & dev tools
-
-🗺 Google – Jetpack Compose & Maps SDK
-
-🎨 Material Design – Design system
-
-🙏 Special thanks to the open-source community ❤
-
-# 📬 Contact  
-
-📧 **Emails**  
-- [baranwalaryan23@gmail.com](mailto:baranwalaryan23@gmail.com)  
-- [anuragimohit468@gmail.com](mailto:anuragimohit468@gmail.com)  
-- [patelpurvil3105@gmail.com](mailto:patelpurvil3105@gmail.com)  
-
-👨‍💻 **Authors**  
-- [Aryan Baranwal](https://www.linkedin.com/in/aryan-baranwal-75b9b129a)  
-- [Mohit Anuragi](https://www.linkedin.com/in/mohit-a-52989b2b2)  
-- [Purvil Patel](https://www.linkedin.com/in/purvil-patel-8201972a1)  
-
-### 🔗 GitHub Profiles  
-[![Aryan](https://img.shields.io/badge/GitHub-aryan23b-black?logo=github)](https://github.com/aryan23b)  
-[![Mohit](https://img.shields.io/badge/GitHub-mohitAnuragi-black?logo=github)](https://github.com/mohitAnuragi)  
-[![Purvil](https://img.shields.io/badge/GitHub-purvil3105-black?logo=github)](https://github.com/purvil3105)  
- 
-
-
-⭐ If you found this project helpful, don’t forget to star the repo on GitHub! ⭐
+- Aryan Baranwal: [GitHub](https://github.com/aryan23b), [LinkedIn](https://www.linkedin.com/in/aryan-baranwal-75b9b129a)
+- Mohit Anuragi: [GitHub](https://github.com/mohitAnuragi), [LinkedIn](https://www.linkedin.com/in/mohit-a-52989b2b2)
+- Purvil Patel: [GitHub](https://github.com/purvil3105), [LinkedIn](https://www.linkedin.com/in/purvil-patel-8201972a1)

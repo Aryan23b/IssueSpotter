@@ -1,3 +1,7 @@
+-- NOTE: NOT USED. This file belongs to an earlier planned schema (departments,
+-- comments, notifications, ...) that was never deployed. The policies that
+-- protect the live database are in sql/001_admin_rls.sql.
+
 -- =============================================
 -- ROW LEVEL SECURITY POLICIES
 -- =============================================

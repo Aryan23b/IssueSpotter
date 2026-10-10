@@ -28,12 +28,12 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const { signIn, isAuthenticated } = useAuth()
+  const { signIn, isAuthenticated, isAdmin } = useAuth()
   const location = useLocation()
 
-  // Redirect if already authenticated
+  // Redirect if already signed in as an admin
   const from = location.state?.from?.pathname || '/dashboard'
-  if (isAuthenticated) {
+  if (isAuthenticated && isAdmin) {
     return <Navigate to={from} replace />
   }
 
